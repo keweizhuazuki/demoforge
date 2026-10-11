@@ -1,13 +1,769 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orbit · Synthetic demo workspace</title><style>
-:root{--ink:#173a37;--muted:#70827c;--accent:#277767;--soft:#e7eee4;--canvas:#f8f9f4;--line:#e3e8df;--side:220px}*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}aside{position:fixed;inset:0 auto 0 0;width:var(--side);padding:32px 23px;border-right:1px solid var(--line);background:#fff}.brand{font-weight:760;letter-spacing:-1.5px;font-size:29px;display:flex;align-items:center;gap:11px}.brand-mark{width:31px;height:31px;border:8px solid var(--accent);border-radius:50%;position:relative}.brand-mark:after{content:"";position:absolute;width:8px;height:8px;border:3px solid #fff;background:var(--accent);border-radius:50%;top:-9px;right:-8px}.workspace{border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin:35px 0;font-size:12px;display:flex;gap:10px;align-items:center}.avatar{background:var(--soft);width:30px;height:30px;display:grid;place-items:center;font-weight:700;border-radius:8px}.subtle{color:var(--muted);font-size:11px}nav{display:grid;gap:7px}nav span{padding:10px 12px;border-radius:7px;color:#66756f}nav .active{background:var(--soft);color:var(--accent);font-weight:650}nav b{margin-right:10px;font-size:17px}aside footer{position:absolute;bottom:25px;left:24px;font-size:11px;color:var(--muted)}main{margin-left:var(--side)}header{height:84px;border-bottom:1px solid var(--line);padding:0 44px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.6)}.crumb{font-size:12px;color:var(--muted)}.crumb strong{color:var(--ink);font-weight:550}.sample{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;display:flex;gap:8px;align-items:center}.sample:before{content:"";width:6px;height:6px;background:var(--accent);border-radius:50%}.content{max-width:1180px;padding:43px 44px;margin:auto}.eyebrow{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--accent);text-transform:uppercase}h1{font-size:39px;font-weight:580;letter-spacing:-1.5px;margin:9px 0 8px;line-height:1.2}p{margin:0;color:var(--muted)}.title-row{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:31px}.primary{background:var(--accent);border:1px solid var(--accent);color:white;border-radius:7px;padding:11px 17px;font-weight:600;font-size:12px;box-shadow:0 3px 5px #16392c0a}.primary:hover{filter:brightness(1.08)}.secondary{border:1px solid var(--line);background:white;border-radius:7px;padding:8px 13px;color:var(--ink);font-weight:550;font-size:12px}.hero{position:relative;overflow:hidden;background:var(--ink);color:white;min-height:184px;border-radius:12px;padding:29px 32px;display:flex;align-items:center;margin:0 0 29px}.hero .eyebrow{color:#bbd6a7}.hero h2{font-weight:500;letter-spacing:-.7px;font-size:25px;max-width:350px;margin:9px 0}.hero p{color:#b5c7be;font-size:12px;max-width:350px}.orbital{position:absolute;right:53px;top:-73px;width:290px;height:290px;border:1px solid #ffffff25;border-radius:50%;transform:rotate(-30deg)}.orbital:before,.orbital:after{content:"";position:absolute;border:1px solid #ffffff30;border-radius:50%;inset:35px}.orbital:after{inset:76px;background:#b4cd9160;box-shadow:80px 130px 0 -44px #d7e7b4}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:32px}.stat{padding:18px 22px;border:1px solid var(--line);border-radius:10px;background:#fff}.stat .label{font-size:11px;color:var(--muted)}.stat .value{font-size:29px;font-weight:570;letter-spacing:-1px;margin-top:4px}.stat .detail{font-size:10px;color:var(--accent);float:right;margin-top:15px}.section-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}h2{margin:0;font-size:17px;font-weight:620;letter-spacing:-.4px}.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.project{background:white;border:1px solid var(--line);border-radius:10px;padding:22px;min-height:168px}.project-icon{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:#e8eafa;color:#7476a8;font-size:19px;margin-bottom:14px}.project:nth-child(2) .project-icon{background:#fff0db;color:#b58542}.project h3{font-size:14px;margin:0 0 4px;font-weight:650}.project p{font-size:11px}.project-bottom{display:flex;justify-content:space-between;margin-top:24px;color:var(--muted);font-size:10px}.badge{border-radius:20px;background:var(--soft);color:var(--accent);font-size:10px;padding:4px 9px}.project.empty{border-style:dashed;background:transparent;display:grid;place-items:center;color:var(--muted);text-align:center}.empty .plus{font-size:26px;font-weight:300}.project-detail{background:white;border:1px solid var(--line);border-radius:12px;padding:27px;margin-top:24px}.detail-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.detail-top h2{font-size:23px;margin:4px 0}.task{display:flex;align-items:center;gap:12px;padding:17px 0;border-top:1px solid var(--line);font-size:13px}.check{width:21px;height:21px;border:1px solid #b7c5bc;background:white;border-radius:6px;color:white;font-size:12px}.check.done{background:var(--accent);border-color:var(--accent)}.task.done .task-label{text-decoration:line-through;color:var(--muted)}.task .badge{margin-left:auto}.empty-tasks{padding:30px 0;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}dialog{border:none;padding:30px;width:420px;border-radius:14px;box-shadow:0 30px 100px #0b241b30;color:var(--ink)}dialog::backdrop{background:#102d2a60;backdrop-filter:blur(3px)}dialog h2{font-size:25px;margin-bottom:7px}dialog p{font-size:12px;margin-bottom:24px}label{display:block;font-size:11px;font-weight:650;margin-bottom:8px}input{width:100%;padding:12px;border:1px solid #cdd7cc;border-radius:7px;color:var(--ink);outline:none}input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--soft)}.dialog-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:25px}[hidden]{display:none!important}body.refresh{--ink:#303356;--muted:#818399;--accent:#7664bd;--soft:#f0ecfa;--canvas:#faf9fd;--line:#e8e4f1;--side:190px}body.refresh aside{background:#f1edf8}body.refresh .hero{border-radius:23px;background:linear-gradient(115deg,#514573,#8774b4);min-height:220px}body.refresh .hero .eyebrow{color:#e0c8fd}body.refresh .hero p{color:#ddd3ea}body.refresh .stats{gap:25px}body.refresh .project,body.refresh .stat{border-radius:18px}body.refresh .content{padding-top:34px}body.refresh .hero h2{font-size:31px}body.refresh .orbital{right:100px;top:-20px}body.refresh h1{font-weight:700}@media(max-width:760px){:root{--side:150px}aside{padding:25px 14px}header{padding:0 24px}.content{padding:30px 24px}.projects{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:13px}.orbital{right:-110px}.hero h2,.hero p{max-width:250px}.sample{font-size:8px}.title-row{align-items:flex-start}h1{font-size:31px}}
-</style></head><body><aside><div class="brand"><span class="brand-mark"></span>orbit</div><div class="workspace"><span class="avatar">S</span><div>Studio workspace<div class="subtle">Team plan · 4 members</div></div></div><nav><span><b>⌂</b> Overview</span><span class="active"><b>▦</b> Projects</span><span><b>◷</b> Activity</span><span><b>◉</b> Team</span></nav><footer>Synthetic sample workspace<br>No real customer data</footer></aside><main><header><div class="crumb">Workspace&nbsp; / &nbsp;<strong>Projects</strong></div><span class="sample">Synthetic demo</span></header><div class="content"><div class="title-row"><div><div class="eyebrow">A little focus goes a long way</div><h1>Your next big thing.</h1><p>Good ideas deserve a clear path forward.</p></div><button class="primary" data-testid="new-project">＋ New project</button></div><div class="hero"><div><div class="eyebrow">Made for moving things forward</div><h2>Less keeping track.<br>More making progress.</h2><p>Bring your projects, people, and next steps into one calm place.</p></div><div class="orbital" aria-hidden="true"></div></div><div class="stats"><div class="stat"><div class="label">Active projects</div><span class="detail">In motion ↗</span><div class="value" id="project-count">02</div></div><div class="stat"><div class="label">Tasks completed</div><span class="detail">This week</span><div class="value" id="task-count">12</div></div><div class="stat"><div class="label">Team momentum</div><span class="detail">Looking good ↗</span><div class="value">86<span style="font-size:17px">%</span></div></div></div><section id="overview"><div class="section-heading"><h2>Projects in focus</h2><span class="subtle">Last updated just now</span></div><div class="projects"><article class="project"><div class="project-icon">✳</div><h3>Brand refresh</h3><p>A fresh perspective for the next chapter.</p><div class="project-bottom"><span>6 of 8 tasks</span><span class="badge">In progress</span></div></article><article class="project"><div class="project-icon">↗</div><h3>Website launch</h3><p>Make a first impression that lasts.</p><div class="project-bottom"><span>4 of 6 tasks</span><span class="badge">In progress</span></div></article><article class="project empty"><div><div class="plus">＋</div><div>Space for your next idea</div></div></article></div></section><section class="project-detail" id="project-detail" hidden><div class="detail-top"><div><div class="eyebrow">Your new project</div><h2 data-testid="project-title"></h2><span class="badge" data-testid="project-status">In progress</span></div><button class="secondary" data-testid="add-task">＋ Add task</button></div><div data-testid="task-list"><div class="empty-tasks">A fresh start. Add your first task to get things moving.</div></div></section></div></main><dialog id="project-dialog"><form id="project-form"><h2>Make room for an idea.</h2><p>Give your new project a name. The rest starts here.</p><label for="project-name">Project name</label><input id="project-name" data-testid="project-name" placeholder="e.g. Website launch" autocomplete="off" required><div class="dialog-actions"><button type="button" class="secondary" data-close="project-dialog">Cancel</button><button class="primary" data-testid="create-project">Create project →</button></div></form></dialog><dialog id="task-dialog"><form id="task-form"><h2>One step closer.</h2><p>Small steps turn a good idea into something real.</p><label for="task-name">Task name</label><input id="task-name" data-testid="task-name" placeholder="What needs to happen?" autocomplete="off" required><div class="dialog-actions"><button type="button" class="secondary" data-close="task-dialog">Cancel</button><button class="primary" data-testid="save-task">Add task →</button></div></form></dialog><script>
-if(new URLSearchParams(location.search).get('variant')==='refresh')document.body.classList.add('refresh');
-const q=(s)=>document.querySelector(s);let tasks=[];
-q('[data-testid="new-project"]').onclick=()=>{q('#project-name').value='';q('#project-dialog').showModal()};
-q('[data-testid="add-task"]').onclick=()=>{q('#task-name').value='';q('#task-dialog').showModal()};
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>q('#'+b.dataset.close).close());
-q('#project-form').onsubmit=e=>{e.preventDefault();q('[data-testid="project-title"]').textContent=q('#project-name').value;q('#project-dialog').close();q('#overview').hidden=true;q('#project-detail').hidden=false;q('#project-count').textContent='03';tasks=[];renderTasks()};
-q('#task-form').onsubmit=e=>{e.preventDefault();tasks.push({name:q('#task-name').value,done:false});q('#task-dialog').close();renderTasks()};
-function renderTasks(){const list=q('[data-testid="task-list"]');list.replaceChildren();if(!tasks.length){const e=document.createElement('div');e.className='empty-tasks';e.textContent='A fresh start. Add your first task to get things moving.';list.append(e)}tasks.forEach((task,i)=>{const row=document.createElement('div');row.className='task'+(task.done?' done':'');const button=document.createElement('button');button.className='check'+(task.done?' done':'');button.dataset.testid='complete-task';button.setAttribute('aria-label',task.done?'Mark task incomplete':'Complete task');button.textContent=task.done?'✓':'';button.onclick=()=>{tasks[i].done=!task.done;renderTasks()};const label=document.createElement('span');label.className='task-label';label.textContent=task.name;const tag=document.createElement('span');tag.className='badge';tag.textContent=task.done?'Done':'To do';row.append(button,label,tag);list.append(row)});q('[data-testid="project-status"]').textContent=tasks.length&&tasks.every(t=>t.done)?'Ready to share':'In progress';q('#task-count').textContent=String(12+tasks.filter(t=>t.done).length)}
-</script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Orbit · Synthetic demo workspace</title>
+    <style>
+      :root {
+        --ink: #173a37;
+        --muted: #70827c;
+        --accent: #277767;
+        --soft: #e7eee4;
+        --canvas: #f8f9f4;
+        --line: #e3e8df;
+        --side: 220px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+        font:
+          14px/1.5 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      aside {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: var(--side);
+        padding: 32px 23px;
+        border-right: 1px solid var(--line);
+        background: #fff;
+      }
+      .brand {
+        font-weight: 760;
+        letter-spacing: -1.5px;
+        font-size: 29px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .brand-mark {
+        width: 31px;
+        height: 31px;
+        border: 8px solid var(--accent);
+        border-radius: 50%;
+        position: relative;
+      }
+      .brand-mark:after {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border: 3px solid #fff;
+        background: var(--accent);
+        border-radius: 50%;
+        top: -9px;
+        right: -8px;
+      }
+      .workspace {
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 10px 12px;
+        margin: 35px 0;
+        font-size: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .avatar {
+        background: var(--soft);
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        border-radius: 8px;
+      }
+      .subtle {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      nav {
+        display: grid;
+        gap: 7px;
+      }
+      nav span {
+        padding: 10px 12px;
+        border-radius: 7px;
+        color: #66756f;
+      }
+      nav .active {
+        background: var(--soft);
+        color: var(--accent);
+        font-weight: 650;
+      }
+      nav b {
+        margin-right: 10px;
+        font-size: 17px;
+      }
+      aside footer {
+        position: absolute;
+        bottom: 25px;
+        left: 24px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      main {
+        margin-left: var(--side);
+      }
+      header {
+        height: 84px;
+        border-bottom: 1px solid var(--line);
+        padding: 0 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .crumb {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .crumb strong {
+        color: var(--ink);
+        font-weight: 550;
+      }
+      .sample {
+        font-size: 10px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .sample:before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+      .content {
+        max-width: 1180px;
+        padding: 43px 44px;
+        margin: auto;
+      }
+      .eyebrow {
+        font-size: 10px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+      h1 {
+        font-size: 39px;
+        font-weight: 580;
+        letter-spacing: -1.5px;
+        margin: 9px 0 8px;
+        line-height: 1.2;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 31px;
+      }
+      .primary {
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        color: white;
+        border-radius: 7px;
+        padding: 11px 17px;
+        font-weight: 600;
+        font-size: 12px;
+        box-shadow: 0 3px 5px #16392c0a;
+      }
+      .primary:hover {
+        filter: brightness(1.08);
+      }
+      .secondary {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 7px;
+        padding: 8px 13px;
+        color: var(--ink);
+        font-weight: 550;
+        font-size: 12px;
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background: var(--ink);
+        color: white;
+        min-height: 184px;
+        border-radius: 12px;
+        padding: 29px 32px;
+        display: flex;
+        align-items: center;
+        margin: 0 0 29px;
+      }
+      .hero .eyebrow {
+        color: #bbd6a7;
+      }
+      .hero h2 {
+        font-weight: 500;
+        letter-spacing: -0.7px;
+        font-size: 25px;
+        max-width: 350px;
+        margin: 9px 0;
+      }
+      .hero p {
+        color: #b5c7be;
+        font-size: 12px;
+        max-width: 350px;
+      }
+      .orbital {
+        position: absolute;
+        right: 53px;
+        top: -73px;
+        width: 290px;
+        height: 290px;
+        border: 1px solid #ffffff25;
+        border-radius: 50%;
+        transform: rotate(-30deg);
+      }
+      .orbital:before,
+      .orbital:after {
+        content: "";
+        position: absolute;
+        border: 1px solid #ffffff30;
+        border-radius: 50%;
+        inset: 35px;
+      }
+      .orbital:after {
+        inset: 76px;
+        background: #b4cd9160;
+        box-shadow: 80px 130px 0 -44px #d7e7b4;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 32px;
+      }
+      .stat {
+        padding: 18px 22px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .stat .label {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .stat .value {
+        font-size: 29px;
+        font-weight: 570;
+        letter-spacing: -1px;
+        margin-top: 4px;
+      }
+      .stat .detail {
+        font-size: 10px;
+        color: var(--accent);
+        float: right;
+        margin-top: 15px;
+      }
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 17px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 620;
+        letter-spacing: -0.4px;
+      }
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .project {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 22px;
+        min-height: 168px;
+      }
+      .project-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        background: #e8eafa;
+        color: #7476a8;
+        font-size: 19px;
+        margin-bottom: 14px;
+      }
+      .project:nth-child(2) .project-icon {
+        background: #fff0db;
+        color: #b58542;
+      }
+      .project h3 {
+        font-size: 14px;
+        margin: 0 0 4px;
+        font-weight: 650;
+      }
+      .project p {
+        font-size: 11px;
+      }
+      .project-bottom {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .badge {
+        border-radius: 20px;
+        background: var(--soft);
+        color: var(--accent);
+        font-size: 10px;
+        padding: 4px 9px;
+      }
+      .project.empty {
+        border-style: dashed;
+        background: transparent;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        text-align: center;
+      }
+      .empty .plus {
+        font-size: 26px;
+        font-weight: 300;
+      }
+      .project-detail {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 27px;
+        margin-top: 24px;
+      }
+      .detail-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .detail-top h2 {
+        font-size: 23px;
+        margin: 4px 0;
+      }
+      .task {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 17px 0;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+      }
+      .check {
+        width: 21px;
+        height: 21px;
+        border: 1px solid #b7c5bc;
+        background: white;
+        border-radius: 6px;
+        color: white;
+        font-size: 12px;
+      }
+      .check.done {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .task.done .task-label {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+      .task .badge {
+        margin-left: auto;
+      }
+      .empty-tasks {
+        padding: 30px 0;
+        color: var(--muted);
+        font-size: 12px;
+        border-top: 1px solid var(--line);
+      }
+      dialog {
+        border: none;
+        padding: 30px;
+        width: 420px;
+        border-radius: 14px;
+        box-shadow: 0 30px 100px #0b241b30;
+        color: var(--ink);
+      }
+      dialog::backdrop {
+        background: #102d2a60;
+        backdrop-filter: blur(3px);
+      }
+      dialog h2 {
+        font-size: 25px;
+        margin-bottom: 7px;
+      }
+      dialog p {
+        font-size: 12px;
+        margin-bottom: 24px;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 650;
+        margin-bottom: 8px;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cdd7cc;
+        border-radius: 7px;
+        color: var(--ink);
+        outline: none;
+      }
+      input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--soft);
+      }
+      .dialog-actions {
+        display: flex;
+        gap: 9px;
+        justify-content: flex-end;
+        margin-top: 25px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      body.refresh {
+        --ink: #303356;
+        --muted: #818399;
+        --accent: #7664bd;
+        --soft: #f0ecfa;
+        --canvas: #faf9fd;
+        --line: #e8e4f1;
+        --side: 190px;
+      }
+      body.refresh aside {
+        background: #f1edf8;
+      }
+      body.refresh .hero {
+        border-radius: 23px;
+        background: linear-gradient(115deg, #514573, #8774b4);
+        min-height: 220px;
+      }
+      body.refresh .hero .eyebrow {
+        color: #e0c8fd;
+      }
+      body.refresh .hero p {
+        color: #ddd3ea;
+      }
+      body.refresh .stats {
+        gap: 25px;
+      }
+      body.refresh .project,
+      body.refresh .stat {
+        border-radius: 18px;
+      }
+      body.refresh .content {
+        padding-top: 34px;
+      }
+      body.refresh .hero h2 {
+        font-size: 31px;
+      }
+      body.refresh .orbital {
+        right: 100px;
+        top: -20px;
+      }
+      body.refresh h1 {
+        font-weight: 700;
+      }
+      @media (max-width: 760px) {
+        :root {
+          --side: 150px;
+        }
+        aside {
+          padding: 25px 14px;
+        }
+        header {
+          padding: 0 24px;
+        }
+        .content {
+          padding: 30px 24px;
+        }
+        .projects {
+          grid-template-columns: 1fr;
+        }
+        .stats {
+          gap: 8px;
+        }
+        .stat {
+          padding: 13px;
+        }
+        .orbital {
+          right: -110px;
+        }
+        .hero h2,
+        .hero p {
+          max-width: 250px;
+        }
+        .sample {
+          font-size: 8px;
+        }
+        .title-row {
+          align-items: flex-start;
+        }
+        h1 {
+          font-size: 31px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside>
+      <div class="brand"><span class="brand-mark"></span>orbit</div>
+      <div class="workspace">
+        <span class="avatar">S</span>
+        <div>
+          Studio workspace
+          <div class="subtle">Team plan · 4 members</div>
+        </div>
+      </div>
+      <nav>
+        <span><b>⌂</b> Overview</span
+        ><span class="active"><b>▦</b> Projects</span
+        ><span><b>◷</b> Activity</span><span><b>◉</b> Team</span>
+      </nav>
+      <footer>Synthetic sample workspace<br />No real customer data</footer>
+    </aside>
+    <main>
+      <header>
+        <div class="crumb">
+          Workspace&nbsp; / &nbsp;<strong>Projects</strong>
+        </div>
+        <span class="sample">Synthetic demo</span>
+      </header>
+      <div class="content">
+        <div class="title-row">
+          <div>
+            <div class="eyebrow">A little focus goes a long way</div>
+            <h1>Your next big thing.</h1>
+            <p>Good ideas deserve a clear path forward.</p>
+          </div>
+          <button class="primary" data-testid="new-project">
+            ＋ New project
+          </button>
+        </div>
+        <div class="hero">
+          <div>
+            <div class="eyebrow">Made for moving things forward</div>
+            <h2>Less keeping track.<br />More making progress.</h2>
+            <p>
+              Bring your projects, people, and next steps into one calm place.
+            </p>
+          </div>
+          <div class="orbital" aria-hidden="true"></div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Active projects</div>
+            <span class="detail">In motion ↗</span>
+            <div class="value" id="project-count">02</div>
+          </div>
+          <div class="stat">
+            <div class="label">Tasks completed</div>
+            <span class="detail">This week</span>
+            <div class="value" id="task-count">12</div>
+          </div>
+          <div class="stat">
+            <div class="label">Team momentum</div>
+            <span class="detail">Looking good ↗</span>
+            <div class="value">86<span style="font-size: 17px">%</span></div>
+          </div>
+        </div>
+        <section id="overview">
+          <div class="section-heading">
+            <h2>Projects in focus</h2>
+            <span class="subtle">Last updated just now</span>
+          </div>
+          <div class="projects">
+            <article class="project">
+              <div class="project-icon">✳</div>
+              <h3>Brand refresh</h3>
+              <p>A fresh perspective for the next chapter.</p>
+              <div class="project-bottom">
+                <span>6 of 8 tasks</span><span class="badge">In progress</span>
+              </div>
+            </article>
+            <article class="project">
+              <div class="project-icon">↗</div>
+              <h3>Website launch</h3>
+              <p>Make a first impression that lasts.</p>
+              <div class="project-bottom">
+                <span>4 of 6 tasks</span><span class="badge">In progress</span>
+              </div>
+            </article>
+            <article class="project empty">
+              <div>
+                <div class="plus">＋</div>
+                <div>Space for your next idea</div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <section class="project-detail" id="project-detail" hidden>
+          <div class="detail-top">
+            <div>
+              <div class="eyebrow">Your new project</div>
+              <h2 data-testid="project-title"></h2>
+              <span class="badge" data-testid="project-status"
+                >In progress</span
+              >
+            </div>
+            <button class="secondary" data-testid="add-task">
+              ＋ Add task
+            </button>
+          </div>
+          <div data-testid="task-list">
+            <div class="empty-tasks">
+              A fresh start. Add your first task to get things moving.
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <dialog id="project-dialog">
+      <form id="project-form">
+        <h2>Make room for an idea.</h2>
+        <p>Give your new project a name. The rest starts here.</p>
+        <label for="project-name">Project name</label
+        ><input
+          id="project-name"
+          data-testid="project-name"
+          placeholder="e.g. Website launch"
+          autocomplete="off"
+          required
+        />
+        <div class="dialog-actions">
+          <button type="button" class="secondary" data-close="project-dialog">
+            Cancel</button
+          ><button class="primary" data-testid="create-project">
+            Create project →
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="task-dialog">
+      <form id="task-form">
+        <h2>One step closer.</h2>
+        <p>Small steps turn a good idea into something real.</p>
+        <label for="task-name">Task name</label
+        ><input
+          id="task-name"
+          data-testid="task-name"
+          placeholder="What needs to happen?"
+          autocomplete="off"
+          required
+        />
+        <div class="dialog-actions">
+          <button type="button" class="secondary" data-close="task-dialog">
+            Cancel</button
+          ><button class="primary" data-testid="save-task">Add task →</button>
+        </div>
+      </form>
+    </dialog>
+    <script>
+      if (new URLSearchParams(location.search).get("variant") === "refresh")
+        document.body.classList.add("refresh");
+      const q = (s) => document.querySelector(s);
+      let tasks = [];
+      q('[data-testid="new-project"]').onclick = () => {
+        q("#project-name").value = "";
+        q("#project-dialog").showModal();
+      };
+      q('[data-testid="add-task"]').onclick = () => {
+        q("#task-name").value = "";
+        q("#task-dialog").showModal();
+      };
+      document
+        .querySelectorAll("[data-close]")
+        .forEach((b) => (b.onclick = () => q("#" + b.dataset.close).close()));
+      q("#project-form").onsubmit = (e) => {
+        e.preventDefault();
+        q('[data-testid="project-title"]').textContent =
+          q("#project-name").value;
+        q("#project-dialog").close();
+        q("#overview").hidden = true;
+        q("#project-detail").hidden = false;
+        q("#project-count").textContent = "03";
+        tasks = [];
+        renderTasks();
+      };
+      q("#task-form").onsubmit = (e) => {
+        e.preventDefault();
+        tasks.push({ name: q("#task-name").value, done: false });
+        q("#task-dialog").close();
+        renderTasks();
+      };
+      function renderTasks() {
+        const list = q('[data-testid="task-list"]');
+        list.replaceChildren();
+        if (!tasks.length) {
+          const e = document.createElement("div");
+          e.className = "empty-tasks";
+          e.textContent =
+            "A fresh start. Add your first task to get things moving.";
+          list.append(e);
+        }
+        tasks.forEach((task, i) => {
+          const row = document.createElement("div");
+          row.className = "task" + (task.done ? " done" : "");
+          const button = document.createElement("button");
+          button.className = "check" + (task.done ? " done" : "");
+          button.dataset.testid = "complete-task";
+          button.setAttribute(
+            "aria-label",
+            task.done ? "Mark task incomplete" : "Complete task",
+          );
+          button.textContent = task.done ? "✓" : "";
+          button.onclick = () => {
+            tasks[i].done = !task.done;
+            renderTasks();
+          };
+          const label = document.createElement("span");
+          label.className = "task-label";
+          label.textContent = task.name;
+          const tag = document.createElement("span");
+          tag.className = "badge";
+          tag.textContent = task.done ? "Done" : "To do";
+          row.append(button, label, tag);
+          list.append(row);
+        });
+        q('[data-testid="project-status"]').textContent =
+          tasks.length && tasks.every((t) => t.done)
+            ? "Ready to share"
+            : "In progress";
+        q("#task-count").textContent = String(
+          12 + tasks.filter((t) => t.done).length,
+        );
+      }
+    </script>
+  </body>
+</html>

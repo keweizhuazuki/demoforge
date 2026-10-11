@@ -10,20 +10,23 @@
     "test": "node --test tests/*.test.mjs",
     "test:e2e": "playwright test",
     "check": "npm run test && npm run build",
-    "scan:secrets": "node scripts/secret-scan.mjs"
+    "scan:secrets": "node scripts/secret-scan.mjs",
+    "format": "prettier --write src server shared tests scripts public/demo.html *.js *.json",
+    "format:check": "prettier --check src server shared tests scripts public/demo.html *.js *.json"
   },
   "dependencies": {
     "@vitejs/plugin-react": "6.1.2",
-    "vite": "8.3.4",
+    "express": "5.3.0",
+    "lucide-react": "1.55.0",
+    "playwright": "1.64.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "lucide-react": "1.55.0",
-    "express": "5.3.0",
-    "playwright": "1.64.0",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "vite": "8.3.4"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.0"
+    "@playwright/test": "1.64.0",
+    "prettier": "3.9.10"
   },
   "engines": {
     "node": ">=24"

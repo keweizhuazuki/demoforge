@@ -1,9 +1,24 @@
 // Separate-origin test fixture. Started only by the hosted Playwright webServer.
-import http from 'node:http';
+import http from "node:http";
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Own-app capture fixture</title><style>body{margin:0;background:#f5f2ea;color:#233840;font:18px system-ui,sans-serif}main{max-width:920px;margin:90px auto;background:#fff;padding:70px;border-radius:24px;box-shadow:0 20px 70px #23384012}small{color:#80755d;letter-spacing:3px}h1{font-size:54px;letter-spacing:-2px;margin:25px 0}p{color:#667b81;line-height:1.7}button{background:#215d58;color:white;border:0;border-radius:10px;padding:18px 27px;font:600 16px system-ui;cursor:pointer}.status{background:#edf6ed;padding:20px;border-radius:12px;margin:28px 0}label{font-size:12px;color:#788287;display:block;margin-top:40px}input{display:block;border:1px solid #c5cecb;border-radius:6px;padding:10px;margin-top:8px}</style></head><body><main><small>SYNTHETIC OWN-APP FIXTURE</small><h1>A separate product.<br>A real browser capture.</h1><p>This app runs on a different origin from DemoForge. Its data is synthetic and its controls only change this page.</p><button data-testid="publish">Publish sample</button><div class="status" data-testid="status">Draft sample</div><label>Security test field (synthetic)<input data-testid="password" type="password" autocomplete="off"></label></main><script>document.querySelector('[data-testid="publish"]').onclick=()=>document.querySelector('[data-testid="status"]').textContent='Published sample';</script></body></html>`;
-http.createServer((request, response) => {
-  if (request.headers.host !== '127.0.0.1:4318') { response.writeHead(403); response.end('Fixture is loopback-only'); return; }
-  if (request.url !== '/') { response.writeHead(404); response.end('Not found'); return; }
-  response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
-  response.end(html);
-}).listen(4318, '127.0.0.1', () => console.log('Own-app fixture ready on http://127.0.0.1:4318'));
+http
+  .createServer((request, response) => {
+    if (request.headers.host !== "127.0.0.1:4318") {
+      response.writeHead(403);
+      response.end("Fixture is loopback-only");
+      return;
+    }
+    if (request.url !== "/") {
+      response.writeHead(404);
+      response.end("Not found");
+      return;
+    }
+    response.writeHead(200, {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+    });
+    response.end(html);
+  })
+  .listen(4318, "127.0.0.1", () =>
+    console.log("Own-app fixture ready on http://127.0.0.1:4318"),
+  );

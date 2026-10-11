@@ -1,41 +1,100 @@
-import { spawn } from 'node:child_process';
-import { readFile, writeFile, lstat, unlink } from 'node:fs/promises';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
-import sharp from 'sharp';
-import { safeId, prepareDirectory } from './capture.mjs';
+import { spawn } from "node:child_process";
+import { readFile, writeFile, lstat, unlink } from "node:fs/promises";
+import path from "node:path";
+import { createHash } from "node:crypto";
+import sharp from "sharp";
+import { safeId, prepareDirectory } from "./capture.mjs";
 
-export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-export const scriptJson = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+export const escapeHtml = (value) =>
+  String(value ?? "").replace(
+    /[&<>"']/g,
+    (char) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        char
+      ],
+  );
+export const scriptJson = (value) =>
+  JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 export function sceneSettings(scene) {
-  const duration = Number(scene.duration ?? 4), zoom = Number(scene.zoom ?? 1.12);
-  if (!Number.isFinite(duration) || duration < 1 || duration > 20) throw new Error(`Scene ${scene.id}: duration must be 1–20 seconds.`);
-  if (!Number.isFinite(zoom) || zoom < 1 || zoom > 2) throw new Error(`Scene ${scene.id}: zoom must be 1–2.`);
-  return { duration, zoom, title: String(scene.title || 'Untitled scene').slice(0, 160), caption: String(scene.caption || '').slice(0, 700) };
+  const duration = Number(scene.duration ?? 4),
+    zoom = Number(scene.zoom ?? 1.12);
+  if (!Number.isFinite(duration) || duration < 1 || duration > 20)
+    throw new Error(`Scene ${scene.id}: duration must be 1–20 seconds.`);
+  if (!Number.isFinite(zoom) || zoom < 1 || zoom > 2)
+    throw new Error(`Scene ${scene.id}: zoom must be 1–2.`);
+  return {
+    duration,
+    zoom,
+    title: String(scene.title || "Untitled scene").slice(0, 160),
+    caption: String(scene.caption || "").slice(0, 700),
+  };
 }
 function lines(text, width, max) {
-  const words = text.split(/\s+/), result = []; let line = '';
+  const words = text.split(/\s+/),
+    result = [];
+  let line = "";
   for (const raw of words) {
     const word = raw.length > width ? `${raw.slice(0, width - 1)}…` : raw;
-    if ((line + ' ' + word).trim().length > width) { result.push(line); line = word; } else line = `${line} ${word}`.trim();
+    if ((line + " " + word).trim().length > width) {
+      result.push(line);
+      line = word;
+    } else line = `${line} ${word}`.trim();
   }
   if (line) result.push(line);
-  if (result.length > max) { result.length = max; result[max - 1] = `${result[max - 1].slice(0, width - 1)}…`; }
+  if (result.length > max) {
+    result.length = max;
+    result[max - 1] = `${result[max - 1].slice(0, width - 1)}…`;
+  }
   return result;
 }
 function captionSvg(settings, index, total) {
-  const title = lines(settings.title, 72, 1)[0] || '';
+  const title = lines(settings.title, 72, 1)[0] || "";
   const caption = lines(settings.caption, 111, 2);
-  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="128"><rect width="1280" height="128" fill="#111827"/><rect x="30" y="27" width="4" height="73" rx="2" fill="#b5f57d"/><text x="51" y="48" fill="#f9fafb" font-family="sans-serif" font-weight="bold" font-size="23">${escapeHtml(title)}</text>${caption.map((line, i) => `<text x="51" y="${76 + i * 23}" fill="#b9c4d4" font-family="sans-serif" font-size="17">${escapeHtml(line)}</text>`).join('')}<text x="1247" y="40" text-anchor="end" fill="#b5f57d" font-family="sans-serif" font-size="14">${index + 1} / ${total}</text></svg>`);
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="128"><rect width="1280" height="128" fill="#111827"/><rect x="30" y="27" width="4" height="73" rx="2" fill="#b5f57d"/><text x="51" y="48" fill="#f9fafb" font-family="sans-serif" font-weight="bold" font-size="23">${escapeHtml(title)}</text>${caption.map((line, i) => `<text x="51" y="${76 + i * 23}" fill="#b9c4d4" font-family="sans-serif" font-size="17">${escapeHtml(line)}</text>`).join("")}<text x="1247" y="40" text-anchor="end" fill="#b5f57d" font-family="sans-serif" font-size="14">${index + 1} / ${total}</text></svg>`,
+  );
 }
 function ffmpeg(args, timeout = 180000) {
   return new Promise((resolve, reject) => {
-    const process = spawn('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-nostdin', '-y', ...args], { shell: false, stdio: ['ignore', 'ignore', 'pipe'] });
-    let stderr = '', timedOut = false;
-    const timer = setTimeout(() => { timedOut = true; process.kill('SIGKILL'); }, timeout);
-    process.stderr.on('data', data => { stderr = (stderr + data.toString()).slice(-4000); });
-    process.on('error', error => { clearTimeout(timer); reject(new Error(`Cannot start FFmpeg: ${error.message}. Install FFmpeg and retry.`)); });
-    process.on('close', code => { clearTimeout(timer); code === 0 ? resolve() : reject(new Error(timedOut ? 'Video rendering exceeded its time limit. Reduce scene duration and retry.' : `FFmpeg failed (${code}): ${stderr.trim()}`)); });
+    const process = spawn(
+      "ffmpeg",
+      ["-hide_banner", "-loglevel", "error", "-nostdin", "-y", ...args],
+      { shell: false, stdio: ["ignore", "ignore", "pipe"] },
+    );
+    let stderr = "",
+      timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      process.kill("SIGKILL");
+    }, timeout);
+    process.stderr.on("data", (data) => {
+      stderr = (stderr + data.toString()).slice(-4000);
+    });
+    process.on("error", (error) => {
+      clearTimeout(timer);
+      reject(
+        new Error(
+          `Cannot start FFmpeg: ${error.message}. Install FFmpeg and retry.`,
+        ),
+      );
+    });
+    process.on("close", (code) => {
+      clearTimeout(timer);
+      code === 0
+        ? resolve()
+        : reject(
+            new Error(
+              timedOut
+                ? "Video rendering exceeded its time limit. Reduce scene duration and retry."
+                : `FFmpeg failed (${code}): ${stderr.trim()}`,
+            ),
+          );
+    });
   });
 }
 export function tutorialHtml({ title, scenes }) {
@@ -47,65 +106,216 @@ export function tutorialHtml({ title, scenes }) {
 </script></body></html>`;
 }
 export async function renderExport({ job, run, project, runDir, outputDir }) {
-  const result = { ...job, status: 'rendering', startedAt: new Date().toISOString(), error: null };
-  const temporary = []; let outputPrepared = false;
+  const result = {
+    ...job,
+    status: "rendering",
+    startedAt: new Date().toISOString(),
+    error: null,
+  };
+  const temporary = [];
+  let outputPrepared = false;
   try {
-    await prepareDirectory(outputDir, job.id); outputPrepared = true;
+    await prepareDirectory(outputDir, job.id);
+    outputPrepared = true;
     await prepareDirectory(runDir, run.id);
-    if (run.status !== 'complete') throw new Error('Only a complete capture run can be exported. Capture all scenes first.');
-    if (!Array.isArray(project.scenes) || !project.scenes.length || project.scenes.length > 20 || !Array.isArray(run.shots) || run.shots.length !== project.scenes.length) throw new Error('Scene count changed. Capture the current storyboard before exporting.');
+    if (run.status !== "complete")
+      throw new Error(
+        "Only a complete capture run can be exported. Capture all scenes first.",
+      );
+    if (
+      !Array.isArray(project.scenes) ||
+      !project.scenes.length ||
+      project.scenes.length > 20 ||
+      !Array.isArray(run.shots) ||
+      run.shots.length !== project.scenes.length
+    )
+      throw new Error(
+        "Scene count changed. Capture the current storyboard before exporting.",
+      );
     for (const [i, scene] of project.scenes.entries()) {
-      if (run.shots[i].sceneId !== scene.id) throw new Error('Scene order or identity changed. Capture this storyboard again.');
+      if (run.shots[i].sceneId !== scene.id)
+        throw new Error(
+          "Scene order or identity changed. Capture this storyboard again.",
+        );
     }
-    if (run.project && JSON.stringify(project.scenes.map(s => ({ id: s.id, actions: s.actions }))) !== JSON.stringify(run.project.scenes.map(s => ({ id: s.id, actions: s.actions })))) throw new Error('The capture actions changed. Capture the current storyboard again.');
-    const exportOrder = project.exportOrder ?? project.scenes.map(s => s.id);
-    if (!Array.isArray(exportOrder) || !exportOrder.length || new Set(exportOrder).size !== exportOrder.length || exportOrder.some(id => !project.scenes.some(s => s.id === id))) throw new Error('Export order must contain unique known scene IDs.');
-    const exportScenes = exportOrder.map(id => project.scenes.find(s => s.id === id));
-    const seen = new Set(), tourScenes = [], clips = [];
+    if (
+      run.project &&
+      JSON.stringify(
+        project.scenes.map((s) => ({ id: s.id, actions: s.actions })),
+      ) !==
+        JSON.stringify(
+          run.project.scenes.map((s) => ({ id: s.id, actions: s.actions })),
+        )
+    )
+      throw new Error(
+        "The capture actions changed. Capture the current storyboard again.",
+      );
+    const exportOrder = project.exportOrder ?? project.scenes.map((s) => s.id);
+    if (
+      !Array.isArray(exportOrder) ||
+      !exportOrder.length ||
+      new Set(exportOrder).size !== exportOrder.length ||
+      exportOrder.some((id) => !project.scenes.some((s) => s.id === id))
+    )
+      throw new Error("Export order must contain unique known scene IDs.");
+    const exportScenes = exportOrder.map((id) =>
+      project.scenes.find((s) => s.id === id),
+    );
+    const seen = new Set(),
+      tourScenes = [],
+      clips = [];
     let totalDuration = 0;
     for (const [index, scene] of exportScenes.entries()) {
       safeId(scene.id);
-      if (seen.has(scene.id)) throw new Error('Duplicate scene identifiers.'); seen.add(scene.id);
-      const shot = run.shots.find(s => s.sceneId === scene.id);
-      if (shot.sceneId !== scene.id) throw new Error('Scene order or identity changed. Capture this storyboard again.');
+      if (seen.has(scene.id)) throw new Error("Duplicate scene identifiers.");
+      seen.add(scene.id);
+      const shot = run.shots.find((s) => s.sceneId === scene.id);
+      if (shot.sceneId !== scene.id)
+        throw new Error(
+          "Scene order or identity changed. Capture this storyboard again.",
+        );
       const settings = sceneSettings(scene);
       totalDuration += settings.duration;
-      if (totalDuration > 180) throw new Error('A video can be at most 180 seconds. Shorten the storyboard.');
+      if (totalDuration > 180)
+        throw new Error(
+          "A video can be at most 180 seconds. Shorten the storyboard.",
+        );
       const focus = shot.focus;
-      if (!focus || !Number.isFinite(focus.x) || !Number.isFinite(focus.y) || focus.x < 0 || focus.x > 1 || focus.y < 0 || focus.y > 1) throw new Error(`Scene ${scene.id} has invalid capture focus. Capture it again.`);
-      const screenshotPath = path.join(runDir, `${scene.id}.png`), stat = await lstat(screenshotPath);
-      if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 12 * 1024 * 1024) throw new Error('Invalid captured screenshot file.');
+      if (
+        !focus ||
+        !Number.isFinite(focus.x) ||
+        !Number.isFinite(focus.y) ||
+        focus.x < 0 ||
+        focus.x > 1 ||
+        focus.y < 0 ||
+        focus.y > 1
+      )
+        throw new Error(
+          `Scene ${scene.id} has invalid capture focus. Capture it again.`,
+        );
+      const screenshotPath = path.join(runDir, `${scene.id}.png`),
+        stat = await lstat(screenshotPath);
+      if (
+        !stat.isFile() ||
+        stat.isSymbolicLink() ||
+        stat.size > 12 * 1024 * 1024
+      )
+        throw new Error("Invalid captured screenshot file.");
       const bytes = await readFile(screenshotPath);
-      if (createHash('sha256').update(bytes).digest('hex') !== shot.hash) throw new Error(`Screenshot integrity check failed for scene ${scene.id}. Capture it again.`);
-      const metadata = await sharp(bytes, { limitInputPixels: 16e6 }).metadata();
-      if (metadata.width !== shot.width || metadata.height !== shot.height) throw new Error('Screenshot dimensions do not match the capture.');
-      tourScenes.push({ ...settings, focus, image: `data:image/png;base64,${bytes.toString('base64')}` });
-      const imagePath = path.join(outputDir, `frame-${index}.png`), captionPath = path.join(outputDir, `caption-${index}.png`), clipPath = path.join(outputDir, `clip-${index}.mp4`);
+      if (createHash("sha256").update(bytes).digest("hex") !== shot.hash)
+        throw new Error(
+          `Screenshot integrity check failed for scene ${scene.id}. Capture it again.`,
+        );
+      const metadata = await sharp(bytes, {
+        limitInputPixels: 16e6,
+      }).metadata();
+      if (metadata.width !== shot.width || metadata.height !== shot.height)
+        throw new Error("Screenshot dimensions do not match the capture.");
+      tourScenes.push({
+        ...settings,
+        focus,
+        image: `data:image/png;base64,${bytes.toString("base64")}`,
+      });
+      const imagePath = path.join(outputDir, `frame-${index}.png`),
+        captionPath = path.join(outputDir, `caption-${index}.png`),
+        clipPath = path.join(outputDir, `clip-${index}.mp4`);
       temporary.push(imagePath, captionPath, clipPath);
       // Contain the source screenshot so the whole captured UI remains visible at the start.
-      await sharp(bytes, { limitInputPixels: 16e6 }).resize(1280, 592, { fit: 'contain', background: '#111827' }).png().toFile(imagePath);
-      await sharp(captionSvg(settings, index, exportScenes.length)).png().toFile(captionPath);
-      const fittedWidth = Math.min(1280, 592 * shot.width / shot.height), fittedHeight = Math.min(592, 1280 * shot.height / shot.width);
+      await sharp(bytes, { limitInputPixels: 16e6 })
+        .resize(1280, 592, { fit: "contain", background: "#111827" })
+        .png()
+        .toFile(imagePath);
+      await sharp(captionSvg(settings, index, exportScenes.length))
+        .png()
+        .toFile(captionPath);
+      const fittedWidth = Math.min(1280, (592 * shot.width) / shot.height),
+        fittedHeight = Math.min(592, (1280 * shot.height) / shot.width);
       const fx = ((1280 - fittedWidth) / 2 + focus.x * fittedWidth) / 1280;
       const fy = ((592 - fittedHeight) / 2 + focus.y * fittedHeight) / 592;
-      const frames = Math.round(settings.duration * 30), n = Math.max(1, frames - 1);
+      const frames = Math.round(settings.duration * 30),
+        n = Math.max(1, frames - 1);
       const z = `1+${(settings.zoom - 1).toFixed(6)}*(0.5-0.5*cos(PI*on/${n}))`;
       const filter = `[0:v]scale=2560:1184,zoompan=z='${z}':x='max(0,min(iw-iw/zoom,iw*${fx.toFixed(6)}-iw/zoom/2))':y='max(0,min(ih-ih/zoom,ih*${fy.toFixed(6)}-ih/zoom/2))':d=${frames}:s=1280x592:fps=30[shot];[shot][1:v]vstack=inputs=2,format=yuv420p[out]`;
-      await ffmpeg(['-i', imagePath, '-loop', '1', '-framerate', '30', '-i', captionPath, '-filter_complex_threads', '1', '-filter_complex', filter, '-map', '[out]', '-frames:v', String(frames), '-an', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '21', '-threads', '2', '-movflags', '+faststart', clipPath]);
+      await ffmpeg([
+        "-i",
+        imagePath,
+        "-loop",
+        "1",
+        "-framerate",
+        "30",
+        "-i",
+        captionPath,
+        "-filter_complex_threads",
+        "1",
+        "-filter_complex",
+        filter,
+        "-map",
+        "[out]",
+        "-frames:v",
+        String(frames),
+        "-an",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "21",
+        "-threads",
+        "2",
+        "-movflags",
+        "+faststart",
+        clipPath,
+      ]);
       clips.push(`file 'clip-${index}.mp4'`);
     }
-    const listPath = path.join(outputDir, 'concat.txt'); temporary.push(listPath);
-    await writeFile(listPath, clips.join('\n') + '\n');
-    await ffmpeg(['-f', 'concat', '-safe', '1', '-i', listPath, '-c', 'copy', '-movflags', '+faststart', path.join(outputDir, 'demo.mp4')], 60000);
-    await writeFile(path.join(outputDir, 'tutorial.html'), tutorialHtml({ title: project.title || project.name || 'Product walkthrough', scenes: tourScenes }));
-    const videoStat = await lstat(path.join(outputDir, 'demo.mp4'));
-    if (videoStat.size < 1024) throw new Error('Rendered video is empty. Retry export.');
-    Object.assign(result, { status: 'complete', videoUrl: `/artifacts/exports/${job.id}/demo.mp4`, tutorialUrl: `/artifacts/exports/${job.id}/tutorial.html`, duration: totalDuration, bytes: videoStat.size });
+    const listPath = path.join(outputDir, "concat.txt");
+    temporary.push(listPath);
+    await writeFile(listPath, clips.join("\n") + "\n");
+    await ffmpeg(
+      [
+        "-f",
+        "concat",
+        "-safe",
+        "1",
+        "-i",
+        listPath,
+        "-c",
+        "copy",
+        "-movflags",
+        "+faststart",
+        path.join(outputDir, "demo.mp4"),
+      ],
+      60000,
+    );
+    await writeFile(
+      path.join(outputDir, "tutorial.html"),
+      tutorialHtml({
+        title: project.title || project.name || "Product walkthrough",
+        scenes: tourScenes,
+      }),
+    );
+    const videoStat = await lstat(path.join(outputDir, "demo.mp4"));
+    if (videoStat.size < 1024)
+      throw new Error("Rendered video is empty. Retry export.");
+    Object.assign(result, {
+      status: "complete",
+      videoUrl: `/artifacts/exports/${job.id}/demo.mp4`,
+      tutorialUrl: `/artifacts/exports/${job.id}/tutorial.html`,
+      duration: totalDuration,
+      bytes: videoStat.size,
+    });
   } catch (error) {
-    result.status = 'failed'; result.error = String(error?.message || error).slice(0, 1500);
-    await Promise.all(['demo.mp4', 'tutorial.html'].map(name => outputPrepared ? unlink(path.join(outputDir, name)).catch(() => {}) : undefined));
+    result.status = "failed";
+    result.error = String(error?.message || error).slice(0, 1500);
+    await Promise.all(
+      ["demo.mp4", "tutorial.html"].map((name) =>
+        outputPrepared
+          ? unlink(path.join(outputDir, name)).catch(() => {})
+          : undefined,
+      ),
+    );
   } finally {
-    await Promise.all(temporary.map(file => unlink(file).catch(() => {})));
+    await Promise.all(temporary.map((file) => unlink(file).catch(() => {})));
   }
   return { ...result, finishedAt: new Date().toISOString() };
 }
