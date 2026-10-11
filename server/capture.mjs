@@ -61,10 +61,10 @@ export function isSensitiveField(field) {
   const type = String(field.type || '').toLowerCase();
   const autocomplete = String(field.autocomplete || '').toLowerCase();
   const label = [field.name, field.id, field.label, field.placeholder, field.title].filter(Boolean).join(' ');
-  return ['password', 'file', 'hidden'].includes(type) || field.sensitiveForm === true || (Array.isArray(field.formFields) && field.formFields.some(item => isSensitiveField({ ...item, type: item.type === 'hidden' ? '' : item.type }))) || /(?:^|\s)(?:current-password|new-password|one-time-code|username|cc-[\w-]+|transaction-[\w-]+)(?:\s|$)/i.test(autocomplete) || /password|passphrase|passwd|(?:api|secret|private)[\s_-]*key|(?:access|auth|bearer|refresh)?[\s_-]*token|credit[\s_-]*card|card[\s_-]*(?:number|security)|\b(?:cvv|cvc|otp|ssn)\b|verification[\s_-]*code|security[\s_-]*code|social[\s_-]*security|routing[\s_-]*number|bank[\s_-]*account/i.test(label);
+  return ['password', 'file', 'hidden'].includes(type) || field.sensitiveForm === true || (Array.isArray(field.formFields) && field.formFields.some(item => isSensitiveField({ ...item, type: item.type === 'hidden' ? '' : item.type }))) || /(?:^|\s)(?:current-password|new-password|one-time-code|username|webauthn|cc-[\w-]+|transaction-[\w-]+)(?:\s|$)/i.test(autocomplete) || /password|passphrase|passwd|(?:api|secret|private)[\s_-]*key|(?:access|auth|bearer|refresh)?[\s_-]*token|credit[\s_-]*card|card[\s_-]*(?:number|security)|\b(?:cvv|cvc|otp|ssn)\b|verification[\s_-]*code|security[\s_-]*code|social[\s_-]*security|routing[\s_-]*number|bank[\s_-]*account/i.test(label);
 }
 function describeElement(element) {
-  const describe = node => ({ type: node.getAttribute('type'), name: node.getAttribute('name'), id: node.id, label: [node.getAttribute('aria-label'), ...Array.from(node.labels || []).map(label => label.textContent)].filter(Boolean).join(' '), placeholder: node.getAttribute('placeholder'), title: node.getAttribute('title'), autocomplete: node.getAttribute('autocomplete') });
+  const describe = node => ({ type: node.getAttribute('type'), name: node.getAttribute('name'), id: node.id, label: [node.getAttribute('aria-label'), ...(node.getAttribute('aria-labelledby') || '').split(/\s+/).filter(Boolean).map(id => node.ownerDocument.getElementById(id)?.textContent || ''), ...Array.from(node.labels || []).map(label => label.textContent)].filter(Boolean).join(' '), placeholder: node.getAttribute('placeholder'), title: node.getAttribute('title'), autocomplete: node.getAttribute('autocomplete') });
   const form = element.closest('form');
   return { ...describe(element), formFields: form ? Array.from(form.querySelectorAll('input,textarea')).slice(0, 200).map(describe) : [] };
 }
@@ -72,7 +72,8 @@ async function sensitiveMasks(page) {
   const fields = page.locator('input, textarea, [contenteditable="true"], [role="textbox"]');
   const count = await fields.count();
   if (count > 200) throw new Error('This page has too many input fields to inspect safely (maximum 200).');
-  const masks = [];
+  // Iframes can contain fields outside the main-frame locator tree; mask them completely.
+  const masks = [page.locator('iframe')];
   for (let i = 0; i < count; i++) {
     const field = fields.nth(i);
     if (isSensitiveField(await field.evaluate(describeElement))) masks.push(field);
