@@ -979,6 +979,7 @@ function App() {
                 <label className="field-label">
                   On-screen caption
                   <textarea
+                    aria-label="On-screen caption"
                     maxLength={240}
                     value={scene.caption}
                     onChange={(e) => editScene({ caption: e.target.value })}

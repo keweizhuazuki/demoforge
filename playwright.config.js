@@ -10,6 +10,8 @@ export default defineConfig({
   expect: { timeout: 15_000 },
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
+    actionTimeout: 15_000,
+    navigationTimeout: 30_000,
     baseURL: "http://127.0.0.1:4317",
     viewport: { width: 1440, height: 1000 },
     screenshot: "only-on-failure",
