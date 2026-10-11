@@ -395,6 +395,21 @@ test("real browser capture → baseline → refresh → edited exports → actio
   await expect(
     page.getByRole("button", { name: "Capture demo", exact: true }),
   ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Toggle scene properties", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("On-screen caption", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByLabel("On-screen caption", { exact: true })
+    .fill("A mobile edit remains editable.");
+  await page
+    .getByRole("button", { name: "Close scene properties", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("On-screen caption", { exact: true }),
+  ).toBeHidden();
   await page.screenshot({
     path: testInfo.outputPath("workbench-mobile-390px.png"),
     fullPage: true,

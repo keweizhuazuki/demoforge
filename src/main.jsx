@@ -736,12 +736,14 @@ function App() {
               >
                 <Expand size={14} />
               </IconButton>
-              <IconButton
-                title="Toggle scene properties"
+              <button
+                className="properties-toggle"
+                aria-label="Toggle scene properties"
                 onClick={() => setMobilePanel((x) => !x)}
               >
                 <Settings2 size={15} />
-              </IconButton>
+                <span>Properties</span>
+              </button>
             </div>
           </div>
           <div
@@ -940,6 +942,13 @@ function App() {
           </div>
         </section>
         <aside className={`inspector ${mobilePanel ? "mobile-open" : ""}`}>
+          <button
+            className="properties-close"
+            aria-label="Close scene properties"
+            onClick={() => setMobilePanel(false)}
+          >
+            <X size={16} /> Close properties
+          </button>
           <div className="inspector-tabs">
             <button
               className={inspector === "scene" ? "active" : ""}

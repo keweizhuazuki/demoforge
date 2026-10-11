@@ -2384,3 +2384,30 @@ select {
     display: none;
   }
 }
+
+.properties-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #61734b;
+  border-radius: 5px;
+  background: #2e3b26;
+  color: #d5e6c1;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+.properties-close {
+  display: none;
+}
+@media (max-width: 900px) {
+  .properties-close {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    padding: 12px 14px;
+    background: #2e3b26;
+    color: #d5e6c1;
+    font-size: 12px;
+  }
+}
