@@ -1,0 +1,38 @@
+name: DemoForge checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run scan:secrets
+      - run: npx playwright install --with-deps chromium
+      - name: Install media inspection and export dependencies
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Exercise real browser capture, drift, failure, and exports
+        run: npm run test:e2e
+      - name: Upload browser report and media evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demoforge-browser-proof
+          path: |
+            playwright-report/
+            test-results/
+            .demoforge/runs/
+            .demoforge/exports/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14

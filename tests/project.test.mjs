@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { defaultProject, validateProject, assertExportCompatible } from '../shared/project.mjs';
+const copy = () => structuredClone(defaultProject);
+test('default flow validates without changing the caller',()=>assert.deepEqual(validateProject(copy()),defaultProject));
+test('blocks external navigation and unsafe IDs',()=>{let p=copy();p.scenes[0].actions[0].path='https://example.com';assert.throws(()=>validateProject(p),/bundled/);p=copy();p.scenes[0].id='../private';assert.throws(()=>validateProject(p),/identifiers/);});
+test('caps duration, actions and waits',()=>{let p=copy();p.scenes[0].duration=100;assert.throws(()=>validateProject(p),/duration/);p=copy();p.scenes[1].actions=[{type:'wait',ms:3000}];assert.throws(()=>validateProject(p),/Wait/);});
+test('rejects duplicate scene IDs and code actions',()=>{let p=copy();p.scenes[1].id=p.scenes[0].id;assert.throws(()=>validateProject(p));p=copy();p.scenes[1].actions=[{type:'evaluate',code:'arbitrary'}];assert.throws(()=>validateProject(p),/Unsupported/);});
+test('presentation edits export; changed flow must recapture',()=>{const p=copy();const run={status:'complete',project:copy(),shots:p.scenes.map(s=>({sceneId:s.id}))};p.scenes[0].caption='A new story';p.scenes[0].zoom=1.7;assert.doesNotThrow(()=>assertExportCompatible(p,run));p.scenes[1].actions[0].selector='#different';assert.throws(()=>assertExportCompatible(p,run),/flow changed/);});
+test('partial and failed runs cannot export',()=>assert.throws(()=>assertExportCompatible(copy(),{status:'failed'}),/completed/));
+test('narrative order selects captured shots without changing execution compatibility',()=>{const p=copy();p.exportOrder=['ship','welcome'];assert.deepEqual(validateProject(p).exportOrder,['ship','welcome']);assert.doesNotThrow(()=>assertExportCompatible(p,{status:'complete',project:copy(),shots:p.scenes.map(s=>({sceneId:s.id}))}));p.exportOrder=['ship','ship'];assert.throws(()=>validateProject(p),/unique/);});
