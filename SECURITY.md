@@ -10,6 +10,6 @@ DemoForge is a loopback-only, single-user developer preview. Do not expose port 
 - Optional AI credentials are environment-only, never part of frontend state. Provider failure bodies and credentials are not logged. AI can suggest presentation settings only, with validation and explicit review.
 - `.env`, keys, generated captures and logs are ignored. `npm run scan:secrets` checks tracked content and Git history for common credential patterns without printing values. This is a guardrail, not comprehensive DLP.
 
-Only synthetic media belongs in repository examples and CI artifacts. For your own files, review output manually before sharing. No capture masking or encrypted storage is provided yet. Provider-side spending limits are strongly recommended; per-request token limits do not establish a financial cap.
+Only synthetic media belongs in repository examples and CI artifacts. For your own files, review output manually before sharing. Heuristic sensitive-field and iframe masking is provided, but it cannot detect every secret in text, images or canvas. Encrypted storage is not provided. Provider-side spending limits are strongly recommended; per-request token limits do not establish a financial cap.
 
 If you accidentally expose a credential, revoke it at the provider first. Removing a Git commit is not revocation. Report vulnerabilities privately to the repository owner rather than posting secrets in an issue.
