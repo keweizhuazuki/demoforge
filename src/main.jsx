@@ -1575,7 +1575,7 @@ function App() {
                 <button
                   className="button primary full-width"
                   onClick={startExport}
-                  disabled={busy}
+                  disabled={busy || !ready}
                 >
                   Try export again
                 </button>

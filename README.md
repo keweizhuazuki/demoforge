@@ -55,7 +55,7 @@ Start your application separately. Set `DEMOFORGE_TARGET_ORIGIN` to its exact HT
 
 Select the configured app in Capture source, confirm the exact origin and your permission to capture it, and start a blank flow. Add constrained navigate/click/type/wait/assert steps using your own stable selectors. Relative navigation stays on that origin; executable JavaScript is never accepted. The allowlist is configured server-side, not through a runtime arbitrary-URL field.
 
-This first own-app mode is deliberately **read-only-network and unauthenticated**: only same-origin GET resources are allowed, fresh browser context every run, no saved login, no third-party resources or WebSockets. Apps needing POST-backed interactions, cross-origin assets or login are not supported yet. Recognized credential/payment fields are blocked or masked, but arbitrary sensitive text cannot be detected reliably. Use a synthetic/demo dataset and review every screenshot before export or sharing.
+This first own-app mode is deliberately **GET-only network and unauthenticated**: only same-origin GET resources are allowed, fresh browser context every run, no saved login, no third-party resources or WebSockets. Apps needing POST-backed interactions, cross-origin assets or login are not supported yet. Recognized credential/payment fields are blocked or masked, but arbitrary sensitive text cannot be detected reliably. GET requests are not a guarantee against server-side effects on poorly designed endpoints. Use a disposable synthetic/demo environment and review every screenshot before export or sharing.
 
 ## Optional AI, with your own provider
 
