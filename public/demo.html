@@ -41,6 +41,9 @@
         padding: 32px 23px;
         border-right: 1px solid var(--line);
         background: #fff;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
       }
       .brand {
         font-weight: 760;
@@ -110,9 +113,10 @@
         font-size: 17px;
       }
       aside footer {
-        position: absolute;
-        bottom: 25px;
-        left: 24px;
+        position: static;
+        margin-top: auto;
+        padding-top: 28px;
+        flex-shrink: 0;
         font-size: 11px;
         color: var(--muted);
       }
