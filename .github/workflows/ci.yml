@@ -1,6 +1,7 @@
 name: DemoForge checks
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -17,6 +18,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run format:check
       - run: npm run scan:secrets
       - run: npx playwright install --with-deps chromium
       - name: Install media inspection and export dependencies
