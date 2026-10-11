@@ -9,6 +9,14 @@ A local creator studio that turns real, repeatable browser flows into cinematic 
 
 </div>
 
+![DemoForge studio with actual captured scenes and an editable timeline](docs/media/studio.png)
+
+**Developer preview · local-first · no model key required for the core loop**
+
+[Watch/download the real edited MP4](docs/media/edited-story.mp4) · [Download the standalone tutorial](docs/media/interactive-tutorial.html) · [Verified browser workflow](https://github.com/keweizhuazuki/demoforge/actions/runs/38104759991)
+
+The included 4-second clip is the second export from an actual hosted-browser test, after changing the caption and selecting/reordering shots. It is an animated screenshot video, not continuous screen recording. All sample content is synthetic. Download the HTML file and open it locally to try the offline tutorial.
+
 ## Why this exists
 
 Recording once is easy. Maintaining a convincing demo through a dozen product changes is the expensive part. DemoForge connects the creative edit to the executable flow, so a beautiful demo can also tell you when the product no longer behaves as expected.
@@ -70,6 +78,10 @@ npm run scan:secrets
 ```
 
 GitHub Actions runs the full browser loop on Ubuntu and uploads capture/video/UI evidence. No provider keys are needed or configured in CI.
+
+## What is verified
+
+The hosted [browser-proof run](https://github.com/keweizhuazuki/demoforge/actions/runs/38104759991) passes the complete loop: real classic/refresh captures, UI baseline approval, changed screenshot hashes, UI caption/timing edits, selected/reordered shot exports, H.264 duration inspection, offline tutorial navigation, a fresh second export after editing, persisted export recovery, and intentional assertion failure. A separate-origin fixture verifies own-app confirmation, capture and rejection of unsafe navigation/sensitive fields. See [evidence provenance](docs/verification.md).
 
 ## Scope, honestly
 

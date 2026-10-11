@@ -4,6 +4,12 @@
 
 [English](README.md)
 
+![真实捕获后的 DemoForge 工作台](docs/media/studio.png)
+
+[下载实际编辑后导出的 MP4](docs/media/edited-story.mp4) · [离线交互教程](docs/media/interactive-tutorial.html) · [已通过的浏览器验收](https://github.com/keweizhuazuki/demoforge/actions/runs/38104759991)
+
+示例视频来自浏览器自动验收中第二次编辑后的真实导出，时长 4 秒，仅包含合成示例内容。它是带镜头运动的真实截图视频，不是连续录屏。
+
 DemoForge 是本地运行的产品演示工作台：真实执行浏览器流程、保留截图证据，用可编辑的镜头、字幕和节奏导出 MP4 与离线交互教程。UI 改版后可以重跑相同流程，并排比较新旧版本，再决定是否批准替换。
 
 ## 完整闭环
